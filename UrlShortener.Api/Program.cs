@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using UrlShortener.Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+builder.Services.AddFluentValidationAutoValidation();
+
 builder.Services.AddOpenApi("v1");
 
 builder.Services.AddMainApiDi(builder.Configuration);
