@@ -14,16 +14,19 @@ public class CreateUrlCommandHandler : IRequestHandler<CreateUrlCommand, Shorten
 {
     private readonly IUrlRepository _urlRepository;
     private readonly ICacheService _cacheService;
+    private readonly IBase62Service _base62Service;
 
-    public CreateUrlCommandHandler(IUrlRepository urlRepository, ICacheService cacheService)
+    public CreateUrlCommandHandler(IUrlRepository urlRepository, ICacheService cacheService
+    , IBase62Service base62Service)
     {
         _urlRepository = urlRepository;
         _cacheService = cacheService;
+        _base62Service = base62Service;
     }
 
     public async Task<ShortenedUrlResponseDto> Handle(CreateUrlCommand request, CancellationToken cancellationToken)
     {
-        var shortCode = request.CustomAlias ?? GenerateShortCode();
+        var shortCode = request.CustomAlias ?? _base62Service.GenerateShortCode();
 
         var exists = await _urlRepository.ShortCodeExistAsync(shortCode);
         if (exists)
@@ -37,17 +40,10 @@ public class CreateUrlCommandHandler : IRequestHandler<CreateUrlCommand, Shorten
         
         var result = MapToDto(shortenedUrl);
         
-        await _cacheService.SetAsync($"url:{shortCode}", result, TimeSpan.FromMinutes(30));
+        var cacheKey = $"url:{shortCode}";
+        await _cacheService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(30));
         
         return result;
-    }
-    
-    private static string GenerateShortCode()
-    {
-        const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        var random = new Random();
-        return new string(Enumerable.Repeat(chars, 7)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
     }
     
     private static ShortenedUrlResponseDto MapToDto(ShortenedUrl url)
