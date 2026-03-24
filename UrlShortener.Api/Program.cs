@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using Scalar.AspNetCore;
 using UrlShortener.Api;
 using UrlShortener.Api.MiddleWare;
 using UrlShortener.Persistence.Data;
@@ -28,6 +29,7 @@ await initializer.InitializeAsync();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseMiddleware<GlobalExceptionHandler>();
