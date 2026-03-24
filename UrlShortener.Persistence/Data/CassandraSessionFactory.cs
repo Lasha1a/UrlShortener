@@ -4,7 +4,7 @@ using UrlShortener.Persistence.Settings;
 
 namespace UrlShortener.Persistence.Data;
 
-public class CassandraSessionFactory : IDisposable
+public class CassandraSessionFactory : IDisposable //creates connection to cassandra 
 {
     private readonly ICluster _cluster;
     private readonly ISession _session;

@@ -26,6 +26,25 @@ public class ShortenedUrl
             IsActive = true
         };
     }
+    
+    public static ShortenedUrl Restore(
+        string shortCode,
+        string originalUrl,
+        DateTime createdAt,
+        DateTime? expiresAt,
+        int clickCount,
+        bool isActive)
+    {
+        return new ShortenedUrl
+        {
+            ShortCode = shortCode,
+            OriginalUrl = originalUrl,
+            CreatedAt = createdAt,
+            ExpiresAt = expiresAt,
+            ClickCount = clickCount,
+            IsActive = isActive
+        };
+    }
 
     public void UpdateUrl(string newOriginalUrl)
     {

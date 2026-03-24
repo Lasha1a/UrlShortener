@@ -4,6 +4,7 @@ using UrlShortener.Persistence.Settings;
 
 namespace UrlShortener.Persistence.Data;
 
+// creates the keyspace and tables similar as dotnet ef database update
 public class CassandraInitializer
 {
     private readonly ISession _session;
