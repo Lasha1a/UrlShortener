@@ -1,6 +1,6 @@
 using UrlShortener.Domain.Entities;
 
-namespace UrlShortener.Application.Interfaces;
+namespace UrlShortener.Application.Interfaces.Url;
 
 public interface IUrlClickRepository
 {

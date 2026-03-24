@@ -1,5 +1,6 @@
 using FluentValidation.AspNetCore;
 using UrlShortener.Api;
+using UrlShortener.Api.MiddleWare;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddTransient<GlobalExceptionHandler>();
 
 builder.Services.AddOpenApi("v1");
 
@@ -21,6 +24,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseHttpsRedirection();
 
