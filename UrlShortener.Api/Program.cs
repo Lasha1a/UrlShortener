@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using UrlShortener.Api;
 using UrlShortener.Api.MiddleWare;
+using UrlShortener.Persistence.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,10 @@ builder.Services.AddOpenApi("v1");
 builder.Services.AddMainApiDi(builder.Configuration);
 
 var app = builder.Build();
+
+//initialize Cassandra keyspace and tables
+var initializer = app.Services.GetRequiredService<CassandraInitializer>();
+await initializer.InitializeAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
