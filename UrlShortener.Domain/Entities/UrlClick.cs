@@ -19,4 +19,19 @@ public class UrlClick
             IpAddress = ipAddress
         };
     }
+    
+    public static UrlClick Restore(
+        string shortCode,
+        DateTime clickedAt,
+        string userAgent,
+        string ipAddress)
+    {
+        return new UrlClick
+        {
+            ShortCode = shortCode,
+            ClickedAt = clickedAt,
+            UserAgent = userAgent,
+            IpAddress = ipAddress
+        };
+    }
 }

@@ -6,7 +6,7 @@ using UrlShortener.Persistence.Settings;
 
 namespace UrlShortener.Persistence.Repositories.Urls;
 
-public class UrlRepository : IUrlRepository
+public class UrlRepository : IUrlRepository 
 {
     private readonly ISession _session;
     private readonly CassandraSettings _settings;
