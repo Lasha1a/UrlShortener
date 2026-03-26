@@ -9,4 +9,6 @@ public interface IUrlRepository
     Task DeleteAsync(string shortCode);
     Task UpdateAsync(ShortenedUrl Url);
     Task<bool> ShortCodeExistAsync(string shortCode);
+    Task<IEnumerable<ShortenedUrl>> GetExpiredUrlsAsync();
+    
 }

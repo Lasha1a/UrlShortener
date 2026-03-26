@@ -31,20 +31,45 @@ public class UrlRepository : IUrlRepository
     
     public Task CreateAsync(ShortenedUrl url)
     {
-        var query = $@"INSERT INTO {_settings.Keyspace}.urls 
+        if (url.ExpiresAt.HasValue)
+        {
+            var ttlSeconds = (int)(url.ExpiresAt.Value - DateTime.UtcNow).TotalSeconds;
+
+            var query = $@"INSERT INTO {_settings.Keyspace}.urls 
+            (short_code, original_url, created_at, expires_at, click_count, is_active) 
+            VALUES (?, ?, ?, ?, ?, ?)
+            USING TTL ?";
+
+            var statement = new SimpleStatement(
+                query,
+                url.ShortCode,
+                url.OriginalUrl,
+                url.CreatedAt,
+                url.ExpiresAt,
+                url.ClickCount,
+                url.IsActive,
+                ttlSeconds);
+
+            _session.Execute(statement);
+        }
+        else
+        {
+            var query = $@"INSERT INTO {_settings.Keyspace}.urls 
             (short_code, original_url, created_at, expires_at, click_count, is_active) 
             VALUES (?, ?, ?, ?, ?, ?)";
 
-        var statement = new SimpleStatement(
-            query,
-            url.ShortCode,
-            url.OriginalUrl,
-            url.CreatedAt,
-            url.ExpiresAt,
-            url.ClickCount,
-            url.IsActive);
+            var statement = new SimpleStatement(
+                query,
+                url.ShortCode,
+                url.OriginalUrl,
+                url.CreatedAt,
+                url.ExpiresAt,
+                url.ClickCount,
+                url.IsActive);
 
-        _session.Execute(statement);
+            _session.Execute(statement);
+        }
+
         return Task.CompletedTask;
     }
     
@@ -85,6 +110,16 @@ public class UrlRepository : IUrlRepository
         var statement = new SimpleStatement(query, shortCode);
         var row = _session.Execute(statement).FirstOrDefault();
         return Task.FromResult(row != null);
+    }
+
+    public Task<IEnumerable<ShortenedUrl>> GetExpiredUrlsAsync()
+    {
+        var query = $"SELECT * FROM {_settings.Keyspace}.urls WHERE is_active = true AND expires_at > ? ALLOW FILTERING";
+        var statement = new SimpleStatement(query, DateTime.UtcNow);
+        var rows = _session.Execute(statement);
+
+        var urls = rows.Select((row => MapToEntity(row)));
+        return Task.FromResult(urls);
     }
     
     
