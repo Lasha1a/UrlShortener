@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UrlShortener.Application.Interfaces.RedisCache;
 using UrlShortener.Application.Interfaces.Url;
+using UrlShortener.Infrastructure.BackgroundWorkers;
 using UrlShortener.Infrastructure.Services.RedisCache;
 using UrlShortener.Infrastructure.Services.Urls;
 
@@ -15,6 +16,8 @@ public static class DependencyInjection
         {
             options.Configuration = configuration["Redis:ConnectionString"];
         });
+        
+        services.AddHostedService<ExpiredUrlCleanupService>();
         
         services.AddScoped<ICacheService, CacheService>();
         
