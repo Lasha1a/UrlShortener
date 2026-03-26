@@ -91,11 +91,6 @@ public class UrlRepository : IUrlRepository
         return Task.CompletedTask;
     }
 
-    public Task<bool> ShortCodeExistAsync(string shortCode)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task DeleteAsync(string shortCode)
     {
         var query = $"DELETE FROM {_settings.Keyspace}.urls WHERE short_code = ?";
@@ -104,7 +99,7 @@ public class UrlRepository : IUrlRepository
         return Task.CompletedTask;
     }
 
-    public Task<bool> ShortCodeExistsAsync(string shortCode)
+    public Task<bool> ShortCodeExistAsync(string shortCode)
     {
         var query = $"SELECT short_code FROM {_settings.Keyspace}.urls WHERE short_code = ?";
         var statement = new SimpleStatement(query, shortCode);
